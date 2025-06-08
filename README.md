@@ -63,7 +63,7 @@ transport:
     $type: shadowsocks
     endpoint:
       $type: websocket
-      url: wss://outline.example.com/stream
+      url: wss://outline.example.com/ws
     cipher: chacha20-ietf-poly1305
     secret: pLaCEHolderSEcret1337
   udp:
