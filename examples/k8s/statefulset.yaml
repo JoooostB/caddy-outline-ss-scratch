@@ -16,11 +16,8 @@ spec:
         - name: caddy-outline-ss-scratch
           image: ghcr.io/joooostb/caddy-outline-ss-scratch:latest
           livenessProbe:
-            httpGet:
-              host: outline.example.com
-              path: "/healthz"
+            tcpSocket:
               port: 443
-              scheme: HTTPS
             initialDelaySeconds: 60
           ports:
             - containerPort: 443
@@ -32,7 +29,7 @@ spec:
             - mountPath: /opt/xcaddy/config.yaml
               subPath: config.yaml
               name: config
-            - mountPath: /opt/xcaddy/.config
+            - mountPath: /opt/xcaddy/.local
               name: state
       volumes:
         - name: config

@@ -9,11 +9,6 @@ apps:
               - host:
                   - "outline.example.com"
               - path:
-                  - "/healthz"
-          - match:
-              - host:
-                  - "outline.example.com"
-              - path:
                   - "/ws"
             handle:
               - handler: websocket2layer4
