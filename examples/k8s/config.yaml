@@ -1,0 +1,41 @@
+apps:
+  http:
+    servers:
+      server1:
+        listen:
+          - ":443"
+        routes:
+          - match:
+              - host:
+                  - "outline.example.com"
+              - path:
+                  - "/healthz"
+          - match:
+              - host:
+                  - "outline.example.com"
+              - path:
+                  - "/ws"
+            handle:
+              - handler: websocket2layer4
+                type: stream
+                connection_handler: ss1
+          - match:
+              - host:
+                  - "outline.example.com"
+              - path:
+                  - "/api"
+            handle:
+              - handler: websocket2layer4
+                type: packet
+                connection_handler: ss1
+  outline:
+    shadowsocks:
+      replay_history: 10000
+    connection_handlers:
+      - name: ss1
+        handle:
+          handler: shadowsocks
+          keys:
+            - id: user-1
+              cipher: chacha20-ietf-poly1305
+              secret: pLaCEHolderSEcret1337

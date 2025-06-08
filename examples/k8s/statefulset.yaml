@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: caddy-outline-ss
+spec:
+  selector:
+    matchLabels:
+      app: caddy-outline-ss
+  serviceName: caddy-outline-ss
+  template:
+    metadata:
+      labels:
+        app: caddy-outline-ss
+    spec:
+      containers:
+        - name: caddy-outline-ss-scratch
+          image: ghcr.io/joooostb/caddy-outline-ss-scratch:latest
+          livenessProbe:
+            httpGet:
+              host: outline.example.com
+              path: "/healthz"
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 60
+          ports:
+            - containerPort: 443
+              name: https
+          env:
+            - name: TZ
+              value: "Europe/Amsterdam"
+          volumeMounts:
+            - mountPath: /opt/xcaddy/config.yaml
+              subPath: config.yaml
+              name: config
+            - mountPath: /opt/xcaddy/.config
+              name: state
+      volumes:
+        - name: config
+          configMap:
+            name: caddy-outline-ss-config
+  volumeClaimTemplates:
+    - metadata:
+        name: state
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi

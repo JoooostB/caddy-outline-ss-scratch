@@ -1,6 +1,6 @@
 # Caddy Outline ss-server in Scratch
 
-[![Build Status](https://github.com/JoooostB/caddy-outline-ss-scratch/actions/workflows/docker.yml/badge.svg)](https://github.com/JoooostB/caddy-outline-ss-scratch/actions/workflows/docker.yml?query=branch%3Amain)
+[![Build Status](https://github.com/JoooostB/caddy-outline-ss-scratch/actions/workflows/docker.yml/badge.svg)](https://github.com/JoooostB/caddy-outline-ss-scratch/actions/workflows/docker.yml)
 [![Mattermost](https://badgen.net/badge/Mattermost/Outline%20Community/blue)](https://community.internetfreedomfestival.org/community/channels/outline-community)
 [![Reddit](https://badgen.net/badge/Reddit/r%2Foutlinevpn/orange)](https://www.reddit.com/r/outlinevpn/)
 
@@ -53,6 +53,34 @@ This repository is based on the official "Automatic HTTPS with Caddy" instructio
     ```bash
     docker logs -f outline-ss-server
     ```
+
+4. Host your Outline client configuration somewhere publicly accessible, you can include it in your Caddy deployment or cloud storage service like GitHub Gist (store as private, copy the RAW URL). The Outline client will need to access this configuration file to connect to your Outline server. The configuration file should be in the following YAML format:
+
+```yaml
+transport:
+  $type: tcpudp
+  tcp:
+    $type: shadowsocks
+    endpoint:
+      $type: websocket
+      url: wss://outline.example.com/stream
+    cipher: chacha20-ietf-poly1305
+    secret: pLaCEHolderSEcret1337
+  udp:
+    $type: shadowsocks
+    endpoint:
+      $type: websocket
+      url: wss://outline.example.com/api
+    cipher: chacha20-ietf-poly1305
+    secret: pLaCEHolderSEcret1337
+```
+
+\* _Replace `outline.example.com` with your actual domain name and `pLaCEHolderSEcret1337` with the secret you set in the `config.yaml` file._
+
+5. Enter the URL of your dynamic Outline client configuration file into the Outline client application. The client will use this configuration to connect to your Outline server, i.e.:
+`https://gist.githubusercontent.com/JoooostB/rEsk6NMYdjsbHQTi5wZ9A5c7kS4k6hPZ/raw/rEsk6NMYdjsbHQTi5wZ9A5c7kS4k6hPZ/outline-example-com.yaml`
+
+> As we're using Websocket transport, we're unable to statically generate the client configuration file. Instead, we provide a dynamic configuration file that the Outline client can use to connect to the server.
 
 ### Troubleshooting
 

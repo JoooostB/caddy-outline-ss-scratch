@@ -4,7 +4,8 @@ on:
   push:
     tags:
       - '*'
-
+  schedule:
+    - cron: '0 0 1 * *' # Runs at midnight on the first day of every month
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,9 +36,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            joooostb/caddy-outline-ss-scratch:latest
-            joooostb/caddy-outline-ss-scratch:${{steps.tag.outputs.tag}}
-            ghcr.io/joooostb/caddy-outline-ss-scratch:latest
-            ghcr.io/joooostb/caddy-outline-ss-scratch:${{steps.tag.outputs.tag}}
+            joooostb/caddy-outline-ss-scratch:stable
+            joooostb/caddy-outline-ss-scratch:${{ steps.tag.outputs.tag || 'latest' }}
+            ghcr.io/joooostb/caddy-outline-ss-scratch:stable
+            ghcr.io/joooostb/caddy-outline-ss-scratch:${{ steps.tag.outputs.tag || 'latest' }}
           build-args: |
-            VERSION=v${{ steps.tag.outputs.tag }}
+            VERSION=v${{ steps.tag.outputs.tag || 'latest' }}
