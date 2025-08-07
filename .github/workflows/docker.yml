@@ -14,17 +14,9 @@ jobs:
       - name: Get git tag
         id: tag
         uses: dawidd6/action-get-tag@v1
+        continue-on-error: true # catch tag failure when triggered on schedule or manually
         with:
           strip_v: true
-      - name: Sanitize tag
-        id: sanitized_tag
-        run: |
-          RAW_TAG="${{ steps.tag.outputs.tag }}"
-          if [[ "$RAW_TAG" == *"/"* || -z "$RAW_TAG" ]]; then
-            echo "tag=latest" >> $GITHUB_OUTPUT
-          else
-            echo "tag=$RAW_TAG" >> $GITHUB_OUTPUT
-          fi
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -47,8 +39,8 @@ jobs:
           push: true
           tags: |
             joooostb/caddy-outline-ss-scratch:stable
-            joooostb/caddy-outline-ss-scratch:${{ steps.sanitized_tag.outputs.tag }}
+            joooostb/caddy-outline-ss-scratch:${{ steps.tag.outputs.tag || 'latest' }}
             ghcr.io/joooostb/caddy-outline-ss-scratch:stable
-            ghcr.io/joooostb/caddy-outline-ss-scratch:${{ steps.sanitized_tag.outputs.tag }}
+            ghcr.io/joooostb/caddy-outline-ss-scratch:${{ steps.tag.outputs.tag || 'latest' }}
           build-args: |
-            VERSION=v${{ steps.sanitized_tag.outputs.tag }}
+            VERSION=v${{ steps.tag.outputs.tag || 'latest' }}
