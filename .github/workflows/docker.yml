@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Get git tag
         id: tag
+        if: github.event_name == 'push' && github.ref_type == 'tag'
         uses: dawidd6/action-get-tag@v1
         continue-on-error: true # catch tag failure when triggered on schedule or manually
         with:
